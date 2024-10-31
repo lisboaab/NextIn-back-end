@@ -1,4 +1,7 @@
+const {SerialPort} = require("serialport");
 const fileService = require("../services/fileService.js");
+
+const port = new SerialPort({ path: "COM3", baudRate: 9600 });
 
 exports.getTicketData = async (req, res) => {
   try {
@@ -48,6 +51,9 @@ exports.callNextTicket = async (req, res) => {
       const nextTicket = data[route].clients.shift();
       data[route].lastTicket = nextTicket;
       await fileService.saveData(data);
+      port.write(`${nextTicket}\n`);
+      console.log(nextTicket);
+      
       res.json({ route, nextTicket });
     } else {
       res.status(404).json({ error: "No clients in queue" });
