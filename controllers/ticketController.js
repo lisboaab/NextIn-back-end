@@ -59,8 +59,8 @@ exports.callNextTicket = async (req, res) => {
 
 exports.leaveQueue = async (req, res) => {
   try {
-    const { ticketNumber } = req.body;
-    const { service } = req.params;
+    const service = req.params.service;
+    const ticketNumber = Number(req.params.ticket);
     const data = await fileService.loadData();
 
     if (data[service] && data[service].clients.includes(ticketNumber)) {
