@@ -49,10 +49,13 @@ exports.callNextTicket = async (req, res) => {
 
     if (data[route] && data[route].clients.length > 0) {
       const nextTicket = data[route].clients.shift();
+      const nextTicketKey = data[route].key
       data[route].lastTicket = nextTicket;
       await fileService.saveData(data);
-      port.write(`${nextTicket}\n`);
-      console.log(nextTicket);
+
+      const message = `${nextTicketKey}${String(nextTicket).padStart(2, '0')}\n`;
+      port.write(message); 
+      console.log(`Enviando para o display: ${message}`);
       
       res.json({ route, nextTicket });
     } else {
